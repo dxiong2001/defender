@@ -30,15 +30,14 @@ module vertical_invader(
 	input wire [9:0] projectiles_y,
 	output reg [9:0] enemy_x = 0,
 	output reg [9:0] enemy_y = 0,
-	output reg[4:0] collide,
+	output reg[9:0] collide,
 	output reg collision,
-	output reg [13:0] score,
-    output reg [1:0] health
+	output reg [13:0] score
     );
 integer i;
 reg clock = 0;
 reg [3:0] offset;
-reg [5:0]count = 10;
+reg [5:0]count = 10'b1010101010;
 reg direction = 1;
 reg np = 1;
 always @(posedge clk_4) 
@@ -47,7 +46,7 @@ begin
 		if(play==0)
 			np <= 0;
 		score <= 0;
-		collide <= 0;
+		collide <= ;
 		collision <= 0;
 		enemy_x <= 100;
 		enemy_y <= 10;
@@ -125,50 +124,55 @@ begin
 		&&(projectiles_x+5 > enemy_x-10)) && ((projectiles_x+5 > enemy_x-10)&&(projectiles_x-5 < enemy_x+10)) 
 		)begin
 			//enemy_y <= 10;
-			if(collide[0] ==0) begin
-				collide[0] <= 1;
-				collision <= 1;
-			end
+			if(collide[1:0] > 0) begin
+				collide[1:0] <= collide[1:0]-1;
+            end else begin
+                collision <= 1;
+            end
 		end
 		
 	if(((projectiles_y - enemy_y < 20) && (projectiles_y > enemy_y)) && ((projectiles_x-5 < (enemy_x+10 + 40))
 		&&(projectiles_x+5 > enemy_x-10 + 40)) && ((projectiles_x+5 > enemy_x-10  + 40)&&(projectiles_x-5 < enemy_x+10 + 40)) 
 		)begin
 			//enemy_y <= 10;
-			if(collide[1] ==0) begin
-				collide[1] <= 1;
-				collision <= 1;
-			end
+			if(collide[3:2] > 0) begin
+				collide[3:2] <= collide[3:2]-1;
+            end else begin
+                collision <= 1;
+            end
 		end
 		
 	if(((projectiles_y - enemy_y < 20) && (projectiles_y > enemy_y)) && ((projectiles_x-5 < (enemy_x+10+ 80))
 		&&(projectiles_x+5 > enemy_x-10+ 80)) && ((projectiles_x+5 > enemy_x-10+ 80)&&(projectiles_x-5 < enemy_x+10+ 80)) 
 		)begin
 			//enemy_y <= 10;
-			if(collide[2] ==0) begin
-				collide[2] <= 1;
-				collision <= 1;
-			end
+			if(collide[5:4] > 0) begin
+				collide[5:4] <= collide[5:4]-1;
+            end else begin
+                collision <= 1;
+            end
 		end
 		
 	if(((projectiles_y - enemy_y < 20) && (projectiles_y > enemy_y)) && ((projectiles_x-5 < (enemy_x+10+ 120))
 		&&(projectiles_x+5 > enemy_x-10+ 120)) && ((projectiles_x+5 > enemy_x-10+ 120)&&(projectiles_x-5 < enemy_x+10+ 120)) 
 		)begin
 			//enemy_y <= 10;
-			if(collide[3] ==0) begin
-				collide[3] <= 1;
-				collision <= 1;
-			end
+			if(collide[7:6] > 0) begin
+				collide[7:6] <= collide[7:6]-1;
+            end else begin
+                collision <= 1;
+            end
 		end
 		
 	if(((projectiles_y - enemy_y < 20) && (projectiles_y > enemy_y)) && ((projectiles_x-5 < (enemy_x+10+ 160))
 		&&(projectiles_x+5 > enemy_x-10+ 160)) && ((projectiles_x+5 > enemy_x-10+ 160)&&(projectiles_x-5 < enemy_x+10+ 160)) 
 		)begin
 			//enemy_y <= 10;
-			if(collide[4] ==0) begin
-				collide[4] <= 1;
-				collision <= 1;
-			end
+			if(collide[9:8] > 0) begin
+				collide[9:8] <= collide[9:8]-1;
+            end else begin
+                collision <= 1;
+            end
 		end
 	
 	
