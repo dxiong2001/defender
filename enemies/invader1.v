@@ -26,17 +26,23 @@ module vertical_invader(
 	input wire clk_3,
 	input wire clk_4,
 	input wire play,
+	input wire [4:0]rand,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
-	output reg [9:0] enemy_x = 0,
-	output reg [9:0] enemy_y = 0,
+	output reg [45:0]enemy_projectiles_x,
+	output reg [44:0]enemy_projectiles_y,
+	
+	output reg [9:0] enemy_x,
+	output reg [9:0] enemy_y,
 	output reg[4:0] collide,
 	output reg collision,
 	output reg [13:0] score
     );
 integer i;
+reg [4:0] shoot;
 reg clock = 0;
-reg [3:0] offset;
+reg [2:0] clock2 = 0;
+reg [4:0] offset;
 reg [5:0]count = 10;
 reg direction = 1;
 reg np = 1;
@@ -46,6 +52,10 @@ begin
 		if(play==0)
 			np <= 0;
 		score <= 0;
+		shoot<=0;
+		clock <= 0;
+		enemy_projectiles_x<=0;
+		enemy_projectiles_y<=0;
 		collide <= 0;
 		collision <= 0;
 		enemy_x <= 100;
@@ -78,7 +88,7 @@ begin
 			end
 		end
 		else begin
-			enemy_y <= enemy_y + 5;
+			enemy_y <= enemy_y + 10;
 			if(direction) begin
 				enemy_x<= enemy_x - 1;
 			end else begin
@@ -170,9 +180,107 @@ begin
 			end
 		end
 	
+	if(clock2 ==3'b111) begin
+		case(rand[2:0])
+		0: begin
+				if(enemy_projectiles_y[8:0]<=0 && collide[0]==0) begin
+					shoot[0]<=1;
+				end
+			end
+		1: begin
+				if(enemy_projectiles_y[17:9]<=0&& collide[1]==0) begin
+					shoot[1]<=1;
+				end
+			end
+		2: begin
+				if(enemy_projectiles_y[26:18]<=0&& collide[2]==0) begin
+					shoot[2]<=1;
+				end
+			end
+		3: begin
+				if(enemy_projectiles_y[35:27]<=0&& collide[3]==0) begin
+					shoot[3]<=1;
+				end
+			end
+		4: begin
+				if(enemy_projectiles_y[44:36]<=0&& collide[4]==0) begin
+					shoot[4]<=1;
+				end
+			end
+	endcase
+	end
+	
+	if(play) begin
+	
+		if(shoot[0]==1) begin
+		shoot[0]<=0;
+		enemy_projectiles_y[8:0] <= enemy_y;
+		enemy_projectiles_x[8:0] <= enemy_x;
+	end
+	
+	if(shoot[1]==1) begin
+		shoot[1]<=0;
+		enemy_projectiles_y[17:9] <= enemy_y;
+		enemy_projectiles_x[17:9] <= enemy_x + 40;
+	end
+	
+	if(shoot[2]==1) begin
+		shoot[2]<=0;
+		enemy_projectiles_y[26:18] <= enemy_y;
+		enemy_projectiles_x[26:18] <= enemy_x + 80;
+	end
+	
+	if(shoot[3]==1) begin
+		shoot[3]<=0;
+		enemy_projectiles_y[35:27] <= enemy_y;
+		enemy_projectiles_x[35:27] <= enemy_x + 120;
+	end
+	
+	if(shoot[4]==1) begin
+		shoot[4]<=0;
+		enemy_projectiles_y[44:36] <= enemy_y;
+		enemy_projectiles_x[45:36] <= enemy_x + 160;
+	end
+	if(enemy_projectiles_y[8:0] > 0) begin
+		if(enemy_projectiles_y[8:0] <= 480)
+			enemy_projectiles_y[8:0]<= enemy_projectiles_y[8:0] + 1;
+		else 
+			enemy_projectiles_y[8:0] <= 0;
+	end
+	
+	if(enemy_projectiles_y[17:9] > 0) begin
+		if(enemy_projectiles_y[17:9] <= 480)
+			enemy_projectiles_y[17:9]<= enemy_projectiles_y[17:9] + 1;
+		else 
+			enemy_projectiles_y[17:9] <= 0;
+	end
+	
+	if(enemy_projectiles_y[26:18] > 0) begin
+		if(enemy_projectiles_y[26:18] <= 480)
+			enemy_projectiles_y[26:18]<= enemy_projectiles_y[26:18] + 1;
+		else 
+			enemy_projectiles_y[26:18] <= 0;
+	end
+	
+	if(enemy_projectiles_y[35:27] > 0) begin
+		if(enemy_projectiles_y[35:27] <= 480)
+			enemy_projectiles_y[35:27]<= enemy_projectiles_y[35:27] + 1;
+		else 
+			enemy_projectiles_y[35:27] <= 0;
+	end
+	if(enemy_projectiles_y[44:36] > 0) begin
+		if(enemy_projectiles_y[44:36] <= 480)
+			enemy_projectiles_y[44:36]<= enemy_projectiles_y[44:36] + 1;
+		else 
+			enemy_projectiles_y[44:36] <= 0;
+	end
+	end
+	
+	
 	
 	count <= count + 1;
 	clock <= clock + 1;
+	clock2 <= clock2 + 1;
 	
 	
 end
