@@ -24,13 +24,24 @@ module vga_display(
 	input wire [9:0] player_x,
 	input wire [9:0] player_y,
 	input wire [9:0] enemy_x,
+	input wire [9:0] enemy2_y,
+	input wire [9:0] enemy2_x,
 	input wire [9:0] enemy_y,
+	input wire [9:0] enemy3_y,
+	input wire [9:0] enemy3_x,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
 	input wire [45:0] enemy1_projectiles_x,
 	input wire [44:0] enemy1_projectiles_y,
+	input wire [45:0] enemy2_projectiles_x,
+	input wire [44:0] enemy2_projectiles_y,
+	input wire [9:0] enemy3_projectiles_x,
+	input wire [9:0] enemy3_projectiles_y,
 	input wire play,
 	input wire [4:0]collide,
+	input wire [4:0]collide2,
+	input wire [4:0]collide3,
+	input wire gameover,
 	output wire hsync,		//horizontal sync out
 	output wire vsync,		//vertical sync out
 	output reg [2:0] red,	//red vga output
@@ -76,7 +87,17 @@ assign y_1[1] = pos_y[16*1+15:16*1];
 assign y_1[2] = pos_y[16*2+15:16*2];
 assign y_1[3] = pos_y[16*3+15:16*3]; 
 */
+reg [24:0] counter = 0;
+reg blink1 = 0;
+always @(posedge dclk) begin
+	if(counter < 25'b0001000000000000000000000) begin
+		blink1 <= 0;
+	end
+	else
+		blink1 <= 1;
+	counter <= counter + 1;
 
+end
 // Horizontal & vertical counters --
 // this is how we keep track of where we are on the screen.
 // ------------------------
@@ -87,6 +108,8 @@ assign y_1[3] = pos_y[16*3+15:16*3];
 always @(posedge dclk or posedge clr)
 begin
 	// reset condition
+	
+	
 	if (clr == 1)
 	begin
 		hc <= 0;
@@ -113,6 +136,7 @@ begin
 		end
 		
 	end
+	
 end
 
 // generate sync pulses (active low)
@@ -209,40 +233,46 @@ begin
 			blue = 0;
 		end
 		//DEFENDER
-		if(play==0) begin
-			//D
-			if (hc >= hbp+200 && hc <= hbp+200+10 && vc <= vbp+200+25 && vc >= vbp+200)
+		if(play==0 ) begin
+			if (hc >= hbp+20+5+220 && hc <= hbp+20+5+335 && vc <= vbp+200+35 && vc >= vbp+230)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+210 && hc <= hbp+210+5 && vc <= vbp+200+20 && vc >= vbp+205)
+			//D
+			if (hc >= hbp+20+200 && hc <= hbp+20+200+10+5 && vc <= vbp+200+25+10 && vc >= vbp+200)
 			begin
 				red = 3'b111;
-				green = 3'b111;
-				blue = 2'b11;
+				green = 3'b000;
+				blue = 2'b00;
+			end
+			if (hc >= hbp+20+210+5 && hc <= hbp+20+210+5+5 && vc <= vbp+200+20+10 && vc >= vbp+205)
+			begin
+				red = 3'b111;
+				green = 3'b000;
+				blue = 2'b00;
 			end
 			//E
-			if (hc >= hbp+220 && hc <= hbp+225 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+220 && hc <= hbp+20+5+225 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+225 && hc <= hbp+235 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+225 && hc <= hbp+20+5+235 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+225 && hc <= hbp+235 && vc <= vbp+200+15 && vc >= vbp+210)
+			if (hc >= hbp+20+5+225 && hc <= hbp+20+5+235 && vc <= vbp+200+15 && vc >= vbp+210)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+225 && hc <= hbp+235 && vc <= vbp+200+25 && vc >= vbp+220)
+			if (hc >= hbp+20+5+225 && hc <= hbp+20+5+235 && vc <= vbp+200+25 && vc >= vbp+220)
 			begin
 				red = 3'b111;
 				green = 3'b111;
@@ -251,19 +281,19 @@ begin
 			
 			
 			//F
-			if (hc >= hbp+240 && hc <= hbp+245 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+240 && hc <= hbp+20+5+245 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+240 && hc <= hbp+255 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+240 && hc <= hbp+20+5+255 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+240 && hc <= hbp+255 && vc <= vbp+200+15 && vc >= vbp+210)
+			if (hc >= hbp+20+5+240 && hc <= hbp+20+5+255 && vc <= vbp+200+15 && vc >= vbp+210)
 			begin
 				red = 3'b111;
 				green = 3'b111;
@@ -272,25 +302,25 @@ begin
 			
 			
 			//E
-			if (hc >= hbp+260 && hc <= hbp+265 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+260 && hc <= hbp+20+5+265 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+265 && hc <= hbp+275 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+265 && hc <= hbp+20+5+275 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+265 && hc <= hbp+275 && vc <= vbp+200+15 && vc >= vbp+210)
+			if (hc >= hbp+20+5+265 && hc <= hbp+20+5+275 && vc <= vbp+200+15 && vc >= vbp+210)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+265 && hc <= hbp+275 && vc <= vbp+200+25 && vc >= vbp+220)
+			if (hc >= hbp+20+5+265 && hc <= hbp+20+5+275 && vc <= vbp+200+25 && vc >= vbp+220)
 			begin
 				red = 3'b111;
 				green = 3'b111;
@@ -298,83 +328,89 @@ begin
 			end
 			
 			//N
-			if (hc >= hbp+280 && hc <= hbp+285 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+280 && hc <= hbp+20+5+285 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+285 && hc <= hbp+290 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+285 && hc <= hbp+20+5+290 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+290 && hc <= hbp+295 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+290 && hc <= hbp+20+5+295 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
 			//D
-			if (hc >= hbp+300 && hc <= hbp+310 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+300 && hc <= hbp+20+5+310 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
-				green = 3'b111;
-				blue = 2'b11;
+				green = 3'b000;
+				blue = 2'b00;
 			end
-			if (hc >= hbp+310 && hc <= hbp+315 && vc <= vbp+200+20 && vc >= vbp+205)
+			if (hc >= hbp+20+5+310 && hc <= hbp+20+5+315 && vc <= vbp+200+20 && vc >= vbp+205)
 			begin
 				red = 3'b111;
-				green = 3'b111;
-				blue = 2'b11;
+				green = 3'b000;
+				blue = 2'b00;
 			end
 			//E
 			
-			if (hc >= hbp+320 && hc <= hbp+325 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+320 && hc <= hbp+20+5+325 && vc <= vbp+200+25 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+325 && hc <= hbp+335 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+325 && hc <= hbp+20+5+335 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+325 && hc <= hbp+335 && vc <= vbp+200+15 && vc >= vbp+210)
+			if (hc >= hbp+20+5+325 && hc <= hbp+20+5+335 && vc <= vbp+200+15 && vc >= vbp+210)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+325 && hc <= hbp+335 && vc <= vbp+200+25 && vc >= vbp+220)
+			if (hc >= hbp+20+5+325 && hc <= hbp+20+5+335 && vc <= vbp+200+25 && vc >= vbp+220)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
 			//R
-			if (hc >= hbp+340 && hc <= hbp+345 && vc <= vbp+200+25 && vc >= vbp+200)
+			if (hc >= hbp+20+5+340 && hc <= hbp+20+5+345 && vc <= vbp+200+35 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+345 && hc <= hbp+350 && vc <= vbp+200+5 && vc >= vbp+200)
+			if (hc >= hbp+20+5+345 && hc <= hbp+20+5+350 && vc <= vbp+200+5 && vc >= vbp+200)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+345 && hc <= hbp+350 && vc <= vbp+215 && vc >= vbp+210)
+			if (hc >= hbp+20+5+345 && hc <= hbp+20+5+350 && vc <= vbp+220 && vc >= vbp+215)
 			begin
 				red = 3'b111;
 				green = 3'b111;
 				blue = 2'b11;
 			end
-			if (hc >= hbp+350 && hc <= hbp+355 && vc <= vbp+200+25 && vc >= vbp+205)
+			if (hc >= hbp+20+350 + 5 && hc <= hbp+20+5+355 && vc <= vbp+200+15 && vc >= vbp+205)
+			begin
+				red = 3'b111;
+				green = 3'b111;
+				blue = 2'b11;
+			end
+			if (hc >= hbp+20+350 + 5 && hc <= hbp+20+5+355&& vc <= vbp+200+35 && vc >= vbp+220)
 			begin
 				red = 3'b111;
 				green = 3'b111;
@@ -391,12 +427,30 @@ begin
 		end
 		//display enemy and player
 		end
-		if (hc >= hbp+player_x-10 && hc <= hbp+player_x+10 && vc <= vbp+player_y+10 && vc >= vbp+player_y-10)
-		begin
-			red = 3'b111;
-			green = 3'b111;
-			blue = 2'b11;
+		if(play==1 && gameover ==1) begin
+			if (hc >= (hbp+80) && hc < (hbp+560))
+			begin
+				red = 3'b111;
+				green = 0;
+				blue = 0;
+			end
+		
 		end
+		
+		if(play==1 && gameover ==0) begin
+			if (hc >= hbp+player_x-10 && hc <= hbp+player_x+10 && vc <= vbp+player_y+10 && vc >= vbp+player_y-10)
+			begin
+				red = 3'b111;
+				green = 3'b111;
+				blue = 2'b11;
+			end
+			
+			if (hc >= hbp+enemy3_x-10 && hc <= hbp+enemy3_x+10 && vc <= vbp+enemy3_y+10 && vc >= vbp+enemy3_y-10)
+			begin
+				red = 3'b111;
+				green = 3'b000;
+				blue = 2'b11;
+			end
 		
 		
 			if(collide[0] == 0) begin
@@ -453,8 +507,64 @@ begin
 				end
 				
 			end
+			
+		if(collide2[0] == 0) begin
+				if (hc >= (hbp+enemy2_x-10) && hc <= (hbp+enemy2_x+10) 
+				&& vc <= vbp+enemy2_y+10  && vc >= vbp+enemy2_y-10 )
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+				end
+				
+			end
+			
+			if(collide2[1] == 0) begin
+				if (hc >= (hbp+enemy2_x-10 + 40) && hc <= (hbp+enemy2_x+10 + 40) 
+				&& vc <= vbp+enemy2_y+10  && vc >= vbp+enemy2_y-10 )
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+				end
+				
+			end
+			
+			if(collide2[2] == 0) begin
+				if (hc >= (hbp+enemy2_x-10 + 80) && hc <= (hbp+enemy2_x+10 + 80) 
+				&& vc <= vbp+enemy2_y+10  && vc >= vbp+enemy2_y-10 )
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+				end
+				
+			end
+			
+			if(collide2[3] == 0) begin
+				if (hc >= (hbp+enemy2_x-10 + 120) && hc <= (hbp+enemy2_x+10 + 120) 
+				&& vc <= vbp+enemy2_y+10  && vc >= vbp+enemy2_y-10 )
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+				end
+				
+			end
+			
+			if(collide2[4] == 0) begin
+				if (hc >= (hbp+enemy2_x-10 + 160) && hc <= (hbp+enemy2_x+10 + 160) 
+				&& vc <= vbp+enemy2_y+10  && vc >= vbp+enemy2_y-10 )
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+				end
+				
+			end
 		
 		//for(i=0; i< 4; i=i+1) begin
+		/////////////////////////////////////////////////Player projectiles
 			if(projectiles_y <= player_y )begin
 				if (hc >= hbp+projectiles_x-5 && hc <= hbp+projectiles_x+5 
 				&& vc <= vbp+projectiles_y+10 && vc >= vbp+projectiles_y-10)
@@ -465,7 +575,7 @@ begin
 					
 				end
 			end
-			
+		///////////////////////////////////////////////Enemy1 Projectiles	
 			if(enemy1_projectiles_y[8:0] > 0 )begin
 				if (hc >= hbp+enemy1_projectiles_x[8:0]-5 && hc <= hbp+enemy1_projectiles_x[8:0]+5 
 				&& vc <= vbp+enemy1_projectiles_y[8:0]+10 && vc >= vbp+enemy1_projectiles_y[8:0]-10)
@@ -516,6 +626,59 @@ begin
 					
 				end
 			end
+		/////////////////////////////////////////////////////Enemy2 projectiles	
+			if(enemy2_projectiles_y[8:0] > 0 )begin
+				if (hc >= hbp+enemy2_projectiles_x[8:0]-5 && hc <= hbp+enemy2_projectiles_x[8:0]+5 
+				&& vc <= vbp+enemy2_projectiles_y[8:0]+10 && vc >= vbp+enemy2_projectiles_y[8:0]-10)
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+					
+				end
+			end
+			if(enemy2_projectiles_y[17:9] > 0 )begin
+				if (hc >= hbp+enemy2_projectiles_x[17:9]-5 && hc <= hbp+enemy2_projectiles_x[17:9]+5 
+				&& vc <= vbp+enemy2_projectiles_y[17:9]+10 && vc >= vbp+enemy2_projectiles_y[17:9]-10)
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+					
+				end
+			end
+			if(enemy2_projectiles_y[26:18] > 0 )begin
+				if (hc >= hbp+enemy2_projectiles_x[26:18]-5 && hc <= hbp+enemy2_projectiles_x[26:18]+5 
+				&& vc <= vbp+enemy2_projectiles_y[26:18]+10 && vc >= vbp+enemy2_projectiles_y[26:18]-10)
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+					
+				end
+			end
+			if(enemy2_projectiles_y[35:27] > 0 )begin
+				if (hc >= hbp+enemy2_projectiles_x[35:27] -5 && hc <= hbp+enemy2_projectiles_x[35:27] +5 
+				&& vc <= vbp+enemy2_projectiles_y[35:27] +10 && vc >= vbp+enemy2_projectiles_y[35:27] -10)
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+					
+				end
+			end
+			if(enemy2_projectiles_y[44:36]  > 0 )begin
+				if (hc >= hbp+enemy2_projectiles_x[45:36]-5 && hc <= hbp+enemy2_projectiles_x[45:36]+5 
+				&& vc <= vbp+enemy2_projectiles_y[44:36]+10 && vc >= vbp+enemy2_projectiles_y[44:36]-10)
+				begin
+					red = 3'b000;
+					green = 3'b111;
+					blue = 2'b00;
+					
+				end
+			end
+			
+		end
 			/*
 			for (i=0;i<16;i=i+1) begin
 				if(pos_y[i] < 300)begin
