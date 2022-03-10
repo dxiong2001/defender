@@ -26,6 +26,7 @@ module vertical_invader(
 	input wire clk_3,
 	input wire clk_4,
 	input wire play,
+	input wire [4:0] destroy,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
 	output reg [45:0]enemy_projectiles_x,
@@ -274,34 +275,34 @@ begin
 		enemy_projectiles_x[45:36] <= enemy_x + 160;
 	end
 	if(enemy_projectiles_y[8:0] > 0) begin
-		if(enemy_projectiles_y[8:0] <= 480)
+		if(enemy_projectiles_y[8:0] <= 480 && destroy[0]==0)
 			enemy_projectiles_y[8:0]<= enemy_projectiles_y[8:0] + 1;
 		else 
 			enemy_projectiles_y[8:0] <= 0;
 	end
 	
 	if(enemy_projectiles_y[17:9] > 0) begin
-		if(enemy_projectiles_y[17:9] <= 480)
+		if(enemy_projectiles_y[17:9] <= 480 && destroy[1]==0)
 			enemy_projectiles_y[17:9]<= enemy_projectiles_y[17:9] + 1;
 		else 
 			enemy_projectiles_y[17:9] <= 0;
 	end
 	
 	if(enemy_projectiles_y[26:18] > 0) begin
-		if(enemy_projectiles_y[26:18] <= 480)
+		if(enemy_projectiles_y[26:18] <= 480 && destroy[2]==0)
 			enemy_projectiles_y[26:18]<= enemy_projectiles_y[26:18] + 1;
 		else 
 			enemy_projectiles_y[26:18] <= 0;
 	end
 	
 	if(enemy_projectiles_y[35:27] > 0) begin
-		if(enemy_projectiles_y[35:27] <= 480)
+		if(enemy_projectiles_y[35:27] <= 480 && destroy[3]==0)
 			enemy_projectiles_y[35:27]<= enemy_projectiles_y[35:27] + 1;
 		else 
 			enemy_projectiles_y[35:27] <= 0;
 	end
 	if(enemy_projectiles_y[44:36] > 0) begin
-		if(enemy_projectiles_y[44:36] <= 480)
+		if(enemy_projectiles_y[44:36] <= 480 && destroy[4]==0)
 			enemy_projectiles_y[44:36]<= enemy_projectiles_y[44:36] + 1;
 		else 
 			enemy_projectiles_y[44:36] <= 0;

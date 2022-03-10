@@ -47,6 +47,7 @@ module invader3(
 	input wire clk_4,
 	input wire play,
 	input wire [7:0]rand,
+	input wire destroy,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
 	input wire [9:0] player_x,
@@ -169,7 +170,7 @@ begin
 	
 	
 	if(enemy_projectiles_y > 0) begin
-		if(enemy_projectiles_y <= 480) begin
+		if(enemy_projectiles_y <= 480 && destroy == 0) begin
 			enemy_projectiles_y<= enemy_projectiles_y +1;
 			if(player_x > enemy_projectiles_x && clock==2'b10)
 				enemy_projectiles_x <= enemy_projectiles_x + 1;
