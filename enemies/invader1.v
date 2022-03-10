@@ -26,7 +26,6 @@ module vertical_invader(
 	input wire clk_3,
 	input wire clk_4,
 	input wire play,
-	input wire [4:0]rand,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
 	output reg [45:0]enemy_projectiles_x,
@@ -44,6 +43,7 @@ reg clock = 0;
 reg [2:0] clock2 = 0;
 reg [4:0] offset;
 reg [5:0]count = 10;
+reg [3:0] rep;
 reg direction = 1;
 reg np = 1;
 always @(posedge clk_4) 
@@ -54,12 +54,13 @@ begin
 		score <= 0;
 		shoot<=0;
 		clock <= 0;
+		direction <= 1;
 		enemy_projectiles_x<=0;
 		enemy_projectiles_y<=0;
 		collide <= 0;
 		collision <= 0;
-		enemy_x <= 100;
-		enemy_y <= 10;
+		enemy_x <= 220;
+		enemy_y <= 50;
 	end
 	
 	/*
@@ -94,13 +95,22 @@ begin
 			end else begin
 				enemy_x <= enemy_x + 1;
 			end
-			direction =  ~direction;
+			direction <=  ~direction;
 			
 		end
 	end
 	if(collision == 1) begin
 		collision <= ~collision;
-		score <= score + 50;
+		score <= score + 10;
+	end
+	
+	if(rep==5) begin
+		collide <= 0;
+		collision <= 0;
+		enemy_x <= 220;
+		enemy_y <= 10;
+		direction <= 1;
+		rep <= 0;
 	end
 	/*
 	
@@ -137,6 +147,7 @@ begin
 			if(collide[0] ==0) begin
 				collide[0] <= 1;
 				collision <= 1;
+				rep <= rep + 1;
 			end
 		end
 		
@@ -147,6 +158,7 @@ begin
 			if(collide[1] ==0) begin
 				collide[1] <= 1;
 				collision <= 1;
+				rep <= rep + 1;
 			end
 		end
 		
@@ -157,6 +169,7 @@ begin
 			if(collide[2] ==0) begin
 				collide[2] <= 1;
 				collision <= 1;
+				rep <= rep + 1;
 			end
 		end
 		
@@ -167,6 +180,7 @@ begin
 			if(collide[3] ==0) begin
 				collide[3] <= 1;
 				collision <= 1;
+				rep <= rep + 1;
 			end
 		end
 		
@@ -177,9 +191,27 @@ begin
 			if(collide[4] ==0) begin
 				collide[4] <= 1;
 				collision <= 1;
+				rep <= rep + 1;
 			end
 		end
-	
+	if(clock2==3'b111) begin
+		if(enemy_projectiles_y[8:0]<=0 && collide[0]==0) begin
+					shoot[0]<=1;
+		end
+		if(enemy_projectiles_y[17:9]<=0 && collide[1]==0) begin
+					shoot[1]<=1;
+		end
+		if(enemy_projectiles_y[26:18]<=0 && collide[2]==0) begin
+					shoot[2]<=1;
+		end
+		if(enemy_projectiles_y[35:27]<=0 && collide[3]==0) begin
+					shoot[3]<=1;
+		end
+		if(enemy_projectiles_y[44:36]<=0 && collide[4]==0) begin
+					shoot[4]<=1;
+		end
+	end
+	/*
 	if(clock2 ==3'b111) begin
 		case(rand[2:0])
 		0: begin
@@ -209,7 +241,7 @@ begin
 			end
 	endcase
 	end
-	
+	*/
 	if(play) begin
 	
 		if(shoot[0]==1) begin

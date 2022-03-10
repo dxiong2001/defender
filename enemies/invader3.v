@@ -46,7 +46,7 @@ module invader3(
 	input wire clk_3,
 	input wire clk_4,
 	input wire play,
-	input wire [4:0]rand,
+	input wire [7:0]rand,
 	input wire [9:0] projectiles_x,
 	input wire [9:0] projectiles_y,
 	input wire [9:0] player_x,
@@ -88,6 +88,7 @@ begin
 		collision <= 0;
 		enemy_x <= 220;
 		enemy_y <= 30;
+		
 	end
 	
 	/*
@@ -99,7 +100,7 @@ begin
 			
 		end
 		*/
-	if(clock==2'b11) begin
+	if(clock==2'b10) begin
 		/*
 		if(enemy_y < 480) 
 			enemy_y <= enemy_y + 1;
@@ -108,7 +109,7 @@ begin
 			enemy_y <= 0;
 		end
 		*/
-		
+		clock <= 0;
 		if(player_x > enemy_x) begin
 				enemy_x<= enemy_x + 1;
 		end else if(player_x < enemy_x) begin
@@ -118,13 +119,7 @@ begin
 		
 		
 	end
-	if(clock3 <= 25'b1111111111111111111111111)
-		buffer <= 1;
-	if(collision == 1) begin
-		collision <= ~collision;
-		score <= score + 50;
-	end
-	/*
+	
 	
 	if(collide==1)begin
 		enemy_x <= 100;
@@ -138,7 +133,7 @@ begin
 		
 		collide <= ~collide;
 	end
-	*/	
+	
 	/*
 	for(i = 0; i< 4 ; i = i+ 1) begin
 		offset = i * 'd40;
@@ -152,24 +147,16 @@ begin
 	
 	end
 	*/
-	if(((projectiles_y - enemy_y < 20) && (projectiles_y > enemy_y)) && ((projectiles_x-5 < (enemy_x+10))
-		&&(projectiles_x+5 > enemy_x-10)) && ((projectiles_x+5 > enemy_x-10)&&(projectiles_x-5 < enemy_x+10)) 
-		)begin
-			//enemy_y <= 10;
-			if(collide ==0) begin
-				collide <= 1;
-				collision <= 1;
-			end
-		end
 		
 	
-	
-	if(clock2==9'b111111111 && buffer==1) begin
-		if(enemy_projectiles_y<=0 && collide==0 && odd==0) begin
+	score <= rand;
+	if(rand == 33) begin
+		
+		if(enemy_projectiles_y<=0) begin
 					shoot<=1;
 		end
 		
-		odd <= ~odd;
+		
 	end
 	
 	if(play) begin
@@ -182,8 +169,15 @@ begin
 	
 	
 	if(enemy_projectiles_y > 0) begin
-		if(enemy_projectiles_y <= 480)
-			enemy_projectiles_y<= enemy_projectiles_y + 2;
+		if(enemy_projectiles_y <= 480) begin
+			enemy_projectiles_y<= enemy_projectiles_y +1;
+			if(player_x > enemy_projectiles_x && clock==2'b10)
+				enemy_projectiles_x <= enemy_projectiles_x + 1;
+			if(player_x < enemy_projectiles_x && clock==2'b10)
+				enemy_projectiles_x <= enemy_projectiles_x - 1;
+				
+			end
+				
 		else 
 			enemy_projectiles_y <= 0;
 	end
