@@ -151,7 +151,7 @@ begin
 		
 	
 	score <= rand;
-	if(rand == 33) begin
+	if(rand > 30 && rand < 40) begin
 		
 		if(enemy_projectiles_y<=0) begin
 					shoot<=1;

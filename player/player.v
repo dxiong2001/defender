@@ -50,7 +50,7 @@ module player(
 	output reg [9:0] player_x,
 	output reg [9:0] player_y,
 	output reg gameover,
-	output reg [1:0] lives
+	output reg [2:0] lives
     );
 
 
@@ -61,7 +61,7 @@ always @(posedge clk_4)
 		if(play==0)
 			np <= 0;
 		count <= 0;
-		lives <= 3;
+		lives <= 5;
 		gameover <= 0;
 		player_x <= 320;
 		player_y <= 420;
@@ -234,7 +234,7 @@ always @(posedge clk_4)
 		if(lives <= 0) begin
 			gameover <= 1;
 		end
-	
+        
 		
 end
 
