@@ -37,6 +37,7 @@ module vga_display(
 	input wire [44:0] enemy2_projectiles_y,
 	input wire [9:0] enemy3_projectiles_x,
 	input wire [9:0] enemy3_projectiles_y,
+	input wire [2:0] lives,
 	input wire play,
 	input wire [4:0]collide,
 	input wire [4:0]collide2,
@@ -65,7 +66,7 @@ parameter vfp = 511; 	// beginning of vertical front porch
 reg [9:0] hc;
 reg [9:0] vc;
 reg [1:0] explode = 0;
-
+reg gameover2 = 0;
 reg[9:0] tempx;
 reg[9:0] tempy;
 reg[9:0] tempx2;
@@ -77,6 +78,7 @@ integer i;
 reg [1:0]it;
 
 reg offset;
+reg start = 0;
 /*
 assign x_1[0] = pos_x[16*0+15:16*0];
 assign x_1[1] = pos_x[16*1+15:16*1];
@@ -233,7 +235,10 @@ begin
 			blue = 0;
 		end
 		//DEFENDER
-		if(play==0 ) begin
+		if(play==0 || start == 0) begin
+			gameover2 <= 0;
+			if(play==0)
+				start <= 1;
 			if (hc >= hbp+20+5+220 && hc <= hbp+20+5+335 && vc <= vbp+200+35 && vc >= vbp+230)
 			begin
 				red = 3'b111;
@@ -425,9 +430,12 @@ begin
 			green = 0;
 			blue = 0;
 		end
-		//display enemy and player
+		//display enemy and player and projectiles
 		end
-		if(play==1 && gameover ==1) begin
+		if(enemy3_y >= 480 || enemy2_y >= 480 || enemy2_y >= 480)begin
+			gameover2<=1;
+		end
+		if(play==1 && (gameover ==1 || gameover2==1)) begin
 			if (hc >= (hbp+80) && hc < (hbp+560))
 			begin
 				red = 3'b111;
@@ -437,7 +445,112 @@ begin
 		
 		end
 		
-		if(play==1 && gameover ==0) begin
+		if(play==1 && gameover ==0 && start ==1 && gameover2==0) begin
+            if(lives==5) begin
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+20+10 && vc >= vbp+20-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+60+10 && vc >= vbp+60-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+100+10 && vc >= vbp+100-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+                
+                if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+140+10 && vc >= vbp+140-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+                
+                if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+180+10 && vc >= vbp+180-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+			end
+            if(lives==4) begin
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+20+10 && vc >= vbp+20-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+60+10 && vc >= vbp+60-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+100+10 && vc >= vbp+100-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+                
+                if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+140+10 && vc >= vbp+140-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+			end
+			if(lives==3) begin
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+20+10 && vc >= vbp+20-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+60+10 && vc >= vbp+60-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+100+10 && vc >= vbp+100-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+			end
+			if(lives==2) begin
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+20+10 && vc >= vbp+20-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+60+10 && vc >= vbp+60-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				
+			end
+			if(lives==1) begin
+				if (hc >= hbp+40-10 && hc <= hbp+40+10 && vc <= vbp+20+10 && vc >= vbp+20-10)
+				begin
+					red = 3'b000;
+					green = 3'b000;
+					blue = 2'b00;
+				end
+				
+			end
 			if (hc >= hbp+player_x-10 && hc <= hbp+player_x+10 && vc <= vbp+player_y+10 && vc >= vbp+player_y-10)
 			begin
 				red = 3'b111;
@@ -674,6 +787,18 @@ begin
 					red = 3'b000;
 					green = 3'b111;
 					blue = 2'b00;
+					
+				end
+			end
+			
+			///////////////////////////Enemy 3 projectiles
+			if(enemy3_projectiles_y > 0 )begin
+				if (hc >= hbp+enemy3_projectiles_x-5 && hc <= hbp+enemy3_projectiles_x+5 
+				&& vc <= vbp+enemy3_projectiles_y+5 && vc >= vbp+enemy3_projectiles_y-5)
+				begin
+					red = 3'b111;
+					green = 3'b000;
+					blue = 2'b11;
 					
 				end
 			end
